@@ -24,7 +24,7 @@ public class Genres implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 50)
+    @Column(length = 30)
     @NotEmpty(message = "Name is required")
     private String name;
 
