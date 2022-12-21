@@ -1,4 +1,4 @@
-package com.ibik.movielistservices.Genres;
+package com.ibik.movielistservices.Cast;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -10,15 +10,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.persistence.JoinColumn;
 
+import com.ibik.movielistservices.Chars.Chars;
 import com.ibik.movielistservices.Movie.Movie;
 
 @Entity
-@Table(name="Genres")
-public class Genres implements Serializable {
+@Table(name = "Cast")
+public class Cast implements Serializable{
+    
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -27,27 +30,35 @@ public class Genres implements Serializable {
 
     @Column(length = 30)
     @NotEmpty(message = "Name is required")
-    private String name;
+    private String Name;
 
-    @Column(columnDefinition = "TINYINT(1)")
-    private boolean is_active;
+    @NotEmpty(message = "Photo is required")
+    private String Photo;
 
     @ManyToMany
     @JoinTable(
-        name = "movie_rel_genres",
-        joinColumns = @JoinColumn(name = "genres_id"),
+        name = "Credit",
+        joinColumns = @JoinColumn(name = "cast_id"),
         inverseJoinColumns = @JoinColumn(name="movie_id")
     )
     private Set<Movie> Movie;
 
-    public Genres() {
+    @OneToMany
+    @JoinColumn(name = "chars_id")
+    private Set<Chars> chars;
+
+    public Cast() {
     }
 
-    public Genres(int id, @NotEmpty(message = "Name is required") String name,
-            boolean is_active, Set<Movie> Movie) {
+    public Cast(int id, String Name, String Photo,  Set<Movie> Movie, Set<Chars> chars) { 
         this.id = id;
-        this.name = name;
-        this.is_active = is_active;
+        this.Name = Name;
+        this.Photo = Photo;
+        this.chars = chars;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
 
     public int getId() {
@@ -59,19 +70,29 @@ public class Genres implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return Name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        Name = name;
     }
 
-    public boolean isIs_active() {
-        return is_active;
+    public String getPhoto() {
+        return Photo;
     }
 
-    public void setIs_active(boolean is_active) {
-        this.is_active = is_active;
+    public void setPhoto(String photo) {
+        Photo = photo;
     }
+
+    public Set<Chars> getChars() {
+        return chars;
+    }
+
+    public void setChars(Set<Chars> chars) {
+        this.chars = chars;
+    }
+
+    
 
 }

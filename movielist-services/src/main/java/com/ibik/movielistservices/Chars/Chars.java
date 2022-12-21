@@ -1,24 +1,17 @@
-package com.ibik.movielistservices.Genres;
+package com.ibik.movielistservices.Chars;
 
 import java.io.Serializable;
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import javax.persistence.JoinColumn;
-
-import com.ibik.movielistservices.Movie.Movie;
 
 @Entity
-@Table(name="Genres")
-public class Genres implements Serializable {
+@Table(name="Chars")
+public class Chars implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -32,19 +25,12 @@ public class Genres implements Serializable {
     @Column(columnDefinition = "TINYINT(1)")
     private boolean is_active;
 
-    @ManyToMany
-    @JoinTable(
-        name = "movie_rel_genres",
-        joinColumns = @JoinColumn(name = "genres_id"),
-        inverseJoinColumns = @JoinColumn(name="movie_id")
-    )
-    private Set<Movie> Movie;
 
-    public Genres() {
+    public Chars() {
     }
 
-    public Genres(int id, @NotEmpty(message = "Name is required") String name,
-            boolean is_active, Set<Movie> Movie) {
+    public Chars(int id, @NotEmpty(message = "Name is required") String name,
+            boolean is_active) {
         this.id = id;
         this.name = name;
         this.is_active = is_active;

@@ -8,13 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import javax.persistence.JoinColumn;
+
 
 import com.ibik.movielistservices.Genres.Genres;
+import com.ibik.movielistservices.Cast.Cast;
 
 @Entity
 @Table(name = "Movie")
@@ -44,19 +44,16 @@ public class Movie implements Serializable{
     @NotEmpty(message = "Video is required")
     private String Video;
 
-    @ManyToMany
-    @JoinTable(
-        name = "movie_rel_genres",
-        joinColumns = @JoinColumn(name = "movie_id"),
-        inverseJoinColumns = @JoinColumn(name="genres_id")
-    )
+    @ManyToMany(mappedBy = "Movie")
     private Set<Genres> Genres;
+
+    @ManyToMany(mappedBy = "Movie")
+    private Set<Cast> Cast;
 
     public Movie() {
     }
 
-    public Movie(int id, String Poster, String Title, String Synopsis, String Rating, String Video,
-                Set<Genres> Genres) { 
+    public Movie(int id, String Poster, String Title, String Synopsis, String Rating, String Video) { 
         this.id = id;
         this.Poster = Poster;
         this.Title = Title;
@@ -116,5 +113,22 @@ public class Movie implements Serializable{
     public void setVideo(String video) {
         Video = video;
     }
+
+    public Set<Genres> getGenres() {
+        return Genres;
+    }
+
+    public void setGenres(Set<Genres> genres) {
+        Genres = genres;
+    }
+
+    public Set<Cast> getCast() {
+        return Cast;
+    }
+
+    public void setCast(Set<Cast> cast) {
+        Cast = cast;
+    }
+    
     
 }
