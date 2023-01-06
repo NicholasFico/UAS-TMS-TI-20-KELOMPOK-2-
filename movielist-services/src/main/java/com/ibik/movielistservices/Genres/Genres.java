@@ -48,6 +48,7 @@ public class Genres implements Serializable {
         this.id = id;
         this.name = name;
         this.is_active = is_active;
+        this.Movie = Movie;
     }
 
     public int getId() {
@@ -73,5 +74,5 @@ public class Genres implements Serializable {
     public void setIs_active(boolean is_active) {
         this.is_active = is_active;
     }
-
+    
 }

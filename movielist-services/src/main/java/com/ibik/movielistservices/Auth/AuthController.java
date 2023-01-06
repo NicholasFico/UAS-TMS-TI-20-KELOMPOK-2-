@@ -1,6 +1,8 @@
 package com.ibik.movielistservices.Auth;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
     
 import javax.validation.Valid;
@@ -18,10 +20,15 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
-import com.ibik.movielistservices.dto.AuthentificationKey;
 import com.ibik.movielistservices.dto.ResponseData;
-    
+import com.ibik.movielistservices.helper.MyHelpers;
+
     @RestController
     @RequestMapping("/api/auth")
     public class AuthController {
@@ -132,27 +139,41 @@ import com.ibik.movielistservices.dto.ResponseData;
             }
         }
     
-        @PostMapping("/auth")
-        public ResponseEntity<ResponseData<Auth>> getAuth(@RequestBody AuthentificationKey authentificationKey) {
-        ResponseData<Auth> responseData = new ResponseData<>();
-    
-        System.out.print(authentificationKey.getEmail());
-        System.out.print(authentificationKey.getPassword());
+        @PostMapping("/login")
+        public ResponseEntity<Map<String,String>> fetchAuth(@RequestBody String payload) {
+            JsonObject jobj = new Gson().fromJson(payload, JsonObject.class);
+            String email = jobj.get("email").getAsString();
+            String password = jobj.get("password").getAsString();
     
         try{
-          Iterable<Auth> values = authServices.findAuth(authentificationKey.getEmail(), authentificationKey.getPassword());
-          responseData.setResult(true);
-          responseData.getMessage();
-          responseData.setData(values);
-          return ResponseEntity.ok(responseData);
+          Auth values = authServices.findAuth(email , password);
+          
+        Algorithm algorithm = Algorithm.HMAC256(new MyHelpers().PRIVATE_KEY);
+            String access_token = JWT.create()
+                    .withSubject(values.getEmail())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 10 + 60 * 1000)) //expired 1 minutes
+                    .withIssuer("auth0")
+                    .sign(algorithm);
+
+            String refresh_token = JWT.create()
+                    .withSubject(values.getEmail())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + 30 + 60 * 1000)) //expired 3 minutes
+                    .withIssuer("auth0")
+                    .sign(algorithm);
+            
+            Map<String,String> results = new HashMap<>();
+            results.put("access_token",access_token);
+            results.put("refresh_token", refresh_token);
+            return ResponseEntity.ok(results);
     
-        } catch (Exception e ) {
-          List<String> message = new ArrayList<>();
-          message.add(e.getMessage());
-          responseData.setMessage(message);
-          responseData.setData(null);
-          responseData.setResult(false);
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        } catch (Exception e) {
+            List<String> message = new ArrayList<>();
+            message.add(e.getMessage());
+            Map<String,String> response = new HashMap<>();
+            response.put("result", "false");
+            response.put("data", "");
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
       }
     }

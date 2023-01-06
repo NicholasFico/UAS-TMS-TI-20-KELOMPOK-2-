@@ -28,4 +28,8 @@ public class GenresServices {
         genresRepo.deleteById(id);
     }
 
+    public Iterable<Genres> findByName(String name){
+        return genresRepo.findGenresByName(name);
+      }
+
 }

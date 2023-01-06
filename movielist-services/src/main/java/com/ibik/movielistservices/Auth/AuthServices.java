@@ -27,7 +27,7 @@ public class AuthServices {
         authRepo.deleteById(id);
     }
 
-    public Iterable<Auth> findAuth(String email, String password){
+    public Auth findAuth(String email, String password){
         return authRepo.findAuth(email, password);
       }
 }

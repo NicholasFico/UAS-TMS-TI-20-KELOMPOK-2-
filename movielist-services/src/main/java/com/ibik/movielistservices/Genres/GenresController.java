@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ibik.movielistservices.dto.ResponseData;
+import com.ibik.movielistservices.dto.SearchData;
 
 @RestController
 @RequestMapping("/api/genres")
@@ -127,6 +128,27 @@ public class GenresController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
     }
+
+    @PostMapping("/search")
+  public ResponseEntity<ResponseData<Genres>> getGenresByName(@RequestBody SearchData searchData) {
+    ResponseData<Genres> responseData = new ResponseData<>();
+
+    try{
+      Iterable<Genres> values = genresServices.findByName(searchData.getSearchKey());
+      responseData.setResult(true);
+      responseData.setMessage(null);
+      responseData.setData(values);
+      return ResponseEntity.ok(responseData);
+
+    } catch (Exception e ) {
+      List<String> message = new ArrayList<>();
+      message.add(e.getMessage());
+      responseData.setMessage(message);
+      responseData.setData(null);
+      responseData.setResult(false);
+      return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+    }
+  }
 
 }
 
