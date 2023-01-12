@@ -21,6 +21,13 @@ public class Auth implements Serializable{
     private int id;
 
     @Column(length = 50)
+    @NotEmpty(message = "Username is required")
+    private String username;
+    
+    @Column(length = 20)
+    private String role;
+
+    @Column(length = 50)
     @NotEmpty(message = "Email is required")
     private String email;
 
@@ -32,10 +39,12 @@ public class Auth implements Serializable{
     public Auth() {
     }
 
-    public Auth(int id, String email, String password) {
+    public Auth(int id, String email, String password, String username, String role) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.username = username;
+        this.role = role;
     }
 
     public static long getSerialversionuid() {
@@ -65,5 +74,23 @@ public class Auth implements Serializable{
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    
 
 }
